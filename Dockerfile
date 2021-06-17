@@ -11,6 +11,5 @@ LABEL com.github.actions.color="orange"
 
 WORKDIR action
 COPY README.md LICENSE entrypoint.sh ./
-RUN sudo chmod +x entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
