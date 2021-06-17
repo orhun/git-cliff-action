@@ -18,4 +18,4 @@ echo "$changelog"
 echo "::set-output name=changelog::$changelog"
 
 # Pass exit code to the next step
-echo ::set-output name=exit_code::$exit_code
+echo "::set-output name=exit_code::$exit_code"
