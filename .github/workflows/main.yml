@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: generate changelog
+      - name: Generate a changelog
         id: git-cliff
         uses: ./
         with:
