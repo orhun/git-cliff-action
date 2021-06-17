@@ -1,0 +1,16 @@
+on: [push]
+
+jobs:
+  git-cliff-action:
+    runs-on: ubuntu-latest
+    name: Test the git-cliff changelog generator action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: generate changelog
+        id: git-cliff
+        uses: ./
+        with:
+          args: --verbose
+      - name: Print the changelog
+        run: echo "${{ steps.git-cliff.outputs.changelog }}"
