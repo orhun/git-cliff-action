@@ -9,10 +9,8 @@ LABEL com.github.actions.description="Generate changelog based on your Git histo
 LABEL com.github.actions.icon="triangle"
 LABEL com.github.actions.color="orange"
 
-COPY README.md /
-COPY LICENSE /
+WORKDIR action
+COPY README.md LICENSE entrypoint.sh ./
+RUN sudo chmod +x entrypoint.sh
 
-COPY entrypoint.sh entrypoint.sh
-
-RUN chmod +x entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
