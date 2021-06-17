@@ -12,4 +12,4 @@ LABEL com.github.actions.color="orange"
 WORKDIR action
 COPY README.md LICENSE entrypoint.sh ./
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
