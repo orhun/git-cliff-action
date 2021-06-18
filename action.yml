@@ -11,7 +11,7 @@ inputs:
     default: "-v"
 outputs:
   changelog:
-    description: "generated changelog"
+    description: "output file"
 runs:
   using: "docker"
   image: "Dockerfile"

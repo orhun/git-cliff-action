@@ -1,21 +1,20 @@
 #!/bin/bash -l
 set -uxo pipefail
 
-CHANGELOG_OUT=${CHANGELOG_OUT:="git-cliff/CHANGELOG.md"}
+OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 
 # Create the output directory
-mkdir -p "$(dirname $CHANGELOG_OUT)"
+mkdir -p "$(dirname $OUTPUT)"
 
 # Execute git-cliff
-git-cliff "$@" > "$CHANGELOG_OUT"
+git-cliff "$@" > "$OUTPUT"
 exit_code=$?
 
 # Output to console
-cat "$CHANGELOG_OUT"
-echo
+cat "$OUTPUT"
 
-# Set output
-echo "::set-output name=changelog::$CHANGELOG_OUT"
+# Set output file
+echo "::set-output name=changelog::$OUTPUT"
 
 # Pass exit code to the next step
 echo "::set-output name=exit_code::$exit_code"

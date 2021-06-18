@@ -17,5 +17,7 @@ jobs:
         with:
           config: fixtures/cliff.toml
           args: --verbose
+        env:
+          OUTPUT: fixtures/CHANGELOG.md
       - name: Print the changelog
-        run: echo "${{ steps.git-cliff.outputs.changelog }}"
+        run: cat "${{ steps.git-cliff.outputs.changelog }}"
