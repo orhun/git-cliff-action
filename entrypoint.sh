@@ -9,13 +9,13 @@ mkdir -p "$(dirname $CHANGELOG_OUT)"
 # Execute git-cliff
 git-cliff "$@" > "$CHANGELOG_OUT"
 exit_code=$?
-changelog=$(cat "$CHANGELOG_OUT")
 
 # Output to console
-echo "$changelog"
+cat "$CHANGELOG_OUT"
+echo
 
 # Set output
-echo "::set-output name=changelog::$changelog"
+echo "::set-output name=changelog::$CHANGELOG_OUT"
 
 # Pass exit code to the next step
 echo "::set-output name=exit_code::$exit_code"
