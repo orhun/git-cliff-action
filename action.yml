@@ -1,18 +1,22 @@
 name: "git-cliff: Changelog Generator"
 description: "Generate changelog based on your Git history"
 inputs:
+  config:
+    description: "config file location"
+    required: false
+    default: "cliff.toml"
   args:
     description: "git-cliff arguments"
     required: false
     default: "-v"
 outputs:
   changelog:
-    description: 'generated changelog'
+    description: "generated changelog"
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.args }}
+    - "-c ${{ inputs.config }} ${{ inputs.args }}"
 branding:
   icon: "triangle"
   color: "orange"

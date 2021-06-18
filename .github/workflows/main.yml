@@ -11,6 +11,7 @@ jobs:
         id: git-cliff
         uses: ./
         with:
+          config: fixtures/cliff.toml
           args: --verbose
       - name: Print the changelog
         run: echo "${{ steps.git-cliff.outputs.changelog }}"
