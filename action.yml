@@ -16,7 +16,8 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - "'${{ inputs.args }}' -c '${{ inputs.config }}'"
+    - -c ${{ inputs.config }}
+    - ${{ inputs.args }}
 branding:
   icon: "triangle"
   color: "orange"
