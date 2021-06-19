@@ -1,4 +1,4 @@
-# git-cliff action
+# [git-cliff](https://github.com/orhun/git-cliff) action ⛰️
 
 This action generates a changelog based on your Git history using [git-cliff](https://github.com/orhun/git-cliff) on the fly!
 
