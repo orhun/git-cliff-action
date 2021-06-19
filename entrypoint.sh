@@ -7,7 +7,7 @@ OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 mkdir -p "$(dirname $OUTPUT)"
 
 # Execute git-cliff
-git-cliff "$@"
+git-cliff $@
 exit_code=$?
 
 # Output to console
