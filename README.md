@@ -28,7 +28,7 @@ The following example fetches the whole Git history (`fetch-depth: 0`), generate
     fetch-depth: 0
 
 - name: Generate a changelog
-  uses: orhun/git-cliff-action@v1
+  uses: orhun/git-cliff-action@v1.0.0
   id: git-cliff
   with:
     config: cliff.toml
