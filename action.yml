@@ -1,4 +1,4 @@
-name: "Changelog Generator"
+name: "git-cliff - Changelog Generator"
 description: "Generate changelog based on your Git history"
 inputs:
   config:
