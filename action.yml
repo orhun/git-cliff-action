@@ -20,4 +20,4 @@ runs:
     - ${{ inputs.args }}
 branding:
   icon: "triangle"
-  color: "orange"
+  color: "green"
