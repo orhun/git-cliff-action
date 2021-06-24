@@ -7,7 +7,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 ### Input variables
 
 - `config`: Path of the configuration file. (Default: `"cliff.toml"`)
-- `args`: Arguments to pass to git-cliff. (Default: `"-v"`)
+- `args`: [Arguments](https://github.com/orhun/git-cliff#usage) to pass to git-cliff. (Default: `"-v"`)
 
 ### Output variables
 
