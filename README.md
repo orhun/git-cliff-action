@@ -24,22 +24,27 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 The following example fetches the whole Git history (`fetch-depth: 0`), generates a changelog in `./CHANGELOG.md`, and prints it out.
 
 ```yml
-- name: Checkout
-  uses: actions/checkout@v2
-  with:
-    fetch-depth: 0
+jobs:
+  changelog:
+    name: Generate changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-- name: Generate a changelog
-  uses: orhun/git-cliff-action@v1
-  id: git-cliff
-  with:
-    config: cliff.toml
-    args: --verbose
-  env:
-    OUTPUT: CHANGELOG.md
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v1
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
 
-- name: Print the changelog
-  run: cat "${{ steps.git-cliff.outputs.changelog }}"
+      - name: Print the changelog
+        run: cat "${{ steps.git-cliff.outputs.changelog }}"
 ```
 
 #### Advanced
@@ -49,37 +54,59 @@ The following example generates a changelog for the latest pushed tag and sets i
 It uses [svenstaro/upload-release-action](https://github.com/svenstaro/upload-release-action) for uploading the release assets.
 
 ```yml
-- name: Checkout
-  uses: actions/checkout@v2
-  with:
-    fetch-depth: 0
+jobs:
+  changelog:
+    name: Generate changelog
+    runs-on: ubuntu-latest
+    outputs:
+      release_body: ${{ steps.release.outputs.RELEASE_BODY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-- name: Generate a changelog
-  uses: orhun/git-cliff-action@v1
-  id: git-cliff
-  with:
-    config: cliff.toml
-    args: -vv --latest --strip header
-  env:
-    OUTPUT: CHANGES.md
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v1
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: CHANGES.md
 
-- name: Set the release body
-  id: release
-  shell: bash
-  run: |
-    r=$(cat ${{ steps.git-cliff.outputs.changelog }})
-    r="${r//'%'/'%25'}"     # Multiline escape sequences for %
-    r="${r//$'\n'/'%0A'}"   # Multiline escape sequences for '\n'
-    r="${r//$'\r'/'%0D'}"   # Multiline escape sequences for '\r'
-    echo "::set-output name=RELEASE_BODY::$r"
+      - name: Set the release body
+        id: release
+        shell: bash
+        run: |
+          r=$(cat ${{ steps.git-cliff.outputs.changelog }})
+          r="${r//'%'/'%25'}"     # Multiline escape sequences for %
+          r="${r//$'\n'/'%0A'}"   # Multiline escape sequences for '\n'
+          r="${r//$'\r'/'%0D'}"   # Multiline escape sequences for '\r'
+          echo "::set-output name=RELEASE_BODY::$r"
 
-- name: Upload the binary releases
-  uses: svenstaro/upload-release-action@v2
-  with:
-    file: binary_release.zip
-    repo_token: ${{ secrets.GITHUB_TOKEN }}
-    tag: ${{ github.ref }}
-    body: ${{ steps.release.outputs.RELEASE_BODY }}
+      # use release body in the same job
+      - name: Upload the binary releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: binary_release.zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          body: ${{ steps.release.outputs.RELEASE_BODY }}
+
+  # use release body in another job
+  upload:
+    name: Upload the release
+    needs: changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload the binary releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: binary_release.zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          body: ${{ needs.changelog.outputs.release_body }}
 ```
 
 ## Credits
