@@ -16,7 +16,7 @@ jobs:
         uses: ./
         with:
           config: fixtures/cliff.toml
-          args: --verbose --strip footer
+          args: --verbose --strip 'footer'
         env:
           OUTPUT: fixtures/CHANGELOG.md
       - name: Print the changelog
