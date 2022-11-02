@@ -1,13 +1,16 @@
 #!/bin/bash -l
 set -uxo pipefail
 
+# Avoid file expansion when passing parameters like with '*'
+set -o noglob
+
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 
 # Create the output directory
 mkdir -p "$(dirname $OUTPUT)"
 
 # Separate arguments before passing them to git-cliff command
-args=$(echo $@ | xargs)
+args=$(echo "$@" | xargs)
 
 # Execute git-cliff
 GIT_CLIFF_OUTPUT="$OUTPUT" git-cliff $args
