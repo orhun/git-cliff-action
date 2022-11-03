@@ -12,6 +12,8 @@ inputs:
 outputs:
   changelog:
     description: "output file"
+  content:
+    description: "content of the changelog"
 runs:
   using: "docker"
   image: "Dockerfile"

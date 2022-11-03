@@ -14,7 +14,12 @@ exit_code=$?
 cat "$OUTPUT"
 
 # Set output file
-echo "::set-output name=changelog::$OUTPUT"
+echo "changelog=$OUTPUT" >> $GITHUB_OUTPUT
+
+# Set the changelog content
+echo "content<<EOF" >> $GITHUB_OUTPUT
+cat "$OUTPUT" >> $GITHUB_OUTPUT
+echo "EOF"
 
 # Pass exit code to the next step
-echo "::set-output name=exit_code::$exit_code"
+echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
