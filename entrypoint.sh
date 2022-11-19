@@ -4,6 +4,9 @@ set -uxo pipefail
 # Avoid file expansion when passing parameters like with '*'
 set -o noglob
 
+# Disable safe directory checks
+git config --global --add safe.directory '*'
+
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 
 # Create the output directory
