@@ -13,10 +13,10 @@ mkdir -p "$(dirname $OUTPUT)"
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-cp -r . /tmp/gitdir
-mv /tmp/gitdir app
+mkdir app
+cp -r .git app
 cd app
-GIT_CLIFF_OUTPUT="$OUTPUT" git-cliff $args
+GIT_CLIFF_OUTPUT="../$OUTPUT" git-cliff $args
 exit_code=$?
 
 # Output to console
