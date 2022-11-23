@@ -4,23 +4,26 @@ set -uxo pipefail
 # Avoid file expansion when passing parameters like with '*'
 set -o noglob
 
-OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
+# Set up working directory
+WORKDIR="app"
+cp -r . /tmp/gitdir
+mv /tmp/gitdir "$WORKDIR"
+cd "$WORKDIR" || exit
 
 # Create the output directory
+OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 mkdir -p "$(dirname $OUTPUT)"
 
 # Separate arguments before passing them to git-cliff command
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-mkdir app
-cp -r .git app
-cd app
-GIT_CLIFF_OUTPUT="../$OUTPUT" git-cliff $args
+GIT_CLIFF_OUTPUT="$OUTPUT" git-cliff $args
 exit_code=$?
 
 # Output to console
 cat "$OUTPUT"
+OUTPUT="$WORKDIR/$OUTPUT"
 
 # Set output file
 echo "::set-output name=changelog::$OUTPUT"
