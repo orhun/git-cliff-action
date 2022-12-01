@@ -84,7 +84,9 @@ jobs:
           r="${r//'%'/'%25'}"     # Multiline escape sequences for %
           r="${r//$'\n'/'%0A'}"   # Multiline escape sequences for '\n'
           r="${r//$'\r'/'%0D'}"   # Multiline escape sequences for '\r'
-          echo "::set-output name=RELEASE_BODY::$r"
+          echo 'RELEASE_BODY<<EOF' >> $GITHUB_ENV
+          echo "$r" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       # use release body in the same job
       - name: Upload the binary releases
