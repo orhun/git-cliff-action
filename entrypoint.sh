@@ -23,10 +23,15 @@ exit_code=$?
 
 # Output to console
 cat "$OUTPUT"
-OUTPUT="$WORKDIR/$OUTPUT"
+
+# Set the changelog content
+echo "content<<EOF" >> $GITHUB_OUTPUT
+cat "$OUTPUT" >> $GITHUB_OUTPUT
+echo "EOF" >> $GITHUB_OUTPUT
 
 # Set output file
-echo "::set-output name=changelog::$OUTPUT"
+OUTPUT="$WORKDIR/$OUTPUT"
+echo "changelog=$OUTPUT" >> $GITHUB_OUTPUT
 
 # Pass exit code to the next step
-echo "::set-output name=exit_code::$exit_code"
+echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
