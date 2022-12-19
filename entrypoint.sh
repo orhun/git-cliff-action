@@ -5,10 +5,7 @@ set -uxo pipefail
 set -o noglob
 
 # Set up working directory
-WORKDIR="app"
-cp -r . /tmp/gitdir
-mv /tmp/gitdir "$WORKDIR"
-cd "$WORKDIR" || exit
+chown -R root:root .
 
 # Create the output directory
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
@@ -30,7 +27,6 @@ cat "$OUTPUT" >> $GITHUB_OUTPUT
 echo "EOF" >> $GITHUB_OUTPUT
 
 # Set output file
-OUTPUT="$WORKDIR/$OUTPUT"
 echo "changelog=$OUTPUT" >> $GITHUB_OUTPUT
 
 # Pass exit code to the next step
