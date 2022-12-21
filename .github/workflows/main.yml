@@ -21,3 +21,5 @@ jobs:
           OUTPUT: fixtures/CHANGELOG.md
       - name: Print the changelog
         run: cat "${{ steps.git-cliff.outputs.changelog }}"
+      - name: Update the changelog
+        run: touch fixtures/CHANGELOG.md
