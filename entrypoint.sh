@@ -5,7 +5,8 @@ set -uxo pipefail
 set -o noglob
 
 # Set up working directory
-chown -R root:root .
+owner=$(stat -c "%u:%g" .)
+chown -R "$(id -u)" .
 
 # Create the output directory
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
@@ -20,6 +21,9 @@ exit_code=$?
 
 # Output to console
 cat "$OUTPUT"
+
+# Revert permissions
+chown -R "$owner" .
 
 # Set the changelog content
 echo "content<<EOF" >> $GITHUB_OUTPUT
