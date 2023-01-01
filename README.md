@@ -122,4 +122,4 @@ GNU General Public License ([v3.0](https://www.gnu.org/licenses/gpl.txt))
 
 ## Copyright
 
-Copyright © 2021, [Orhun Parmaksız](mailto:orhunparmaksiz@gmail.com)
+Copyright © 2021-2023, [Orhun Parmaksız](mailto:orhunparmaksiz@gmail.com)
