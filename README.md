@@ -60,7 +60,7 @@ jobs:
     name: Generate changelog
     runs-on: ubuntu-latest
     outputs:
-      release_body: ${{ steps.release.outputs.RELEASE_BODY }}
+      release_body: ${{ steps.git-cliff.outputs.content }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -76,18 +76,6 @@ jobs:
         env:
           OUTPUT: CHANGES.md
 
-      - name: Set the release body
-        id: release
-        shell: bash
-        run: |
-          r=$(cat ${{ steps.git-cliff.outputs.changelog }})
-          r="${r//'%'/'%25'}"     # Multiline escape sequences for %
-          r="${r//$'\n'/'%0A'}"   # Multiline escape sequences for '\n'
-          r="${r//$'\r'/'%0D'}"   # Multiline escape sequences for '\r'
-          echo 'RELEASE_BODY<<EOF' >> $GITHUB_ENV
-          echo "$r" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-
       # use release body in the same job
       - name: Upload the binary releases
         uses: svenstaro/upload-release-action@v2
@@ -95,7 +83,7 @@ jobs:
           file: binary_release.zip
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
-          body: ${{ steps.release.outputs.RELEASE_BODY }}
+          body: ${{ steps.git-cliff.outputs.content }}
 
   # use release body in another job
   upload:
