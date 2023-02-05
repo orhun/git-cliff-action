@@ -4,9 +4,10 @@ set -uxo pipefail
 # Avoid file expansion when passing parameters like with '*'
 set -o noglob
 
-# Set up working directory
-owner=$(stat -c "%u:%g" .)
-chown -R "$(id -u)" .
+# Set up permissions
+if [[ $(id -u) -ne $(stat -c '%u' .) ]]; then
+	eids=$(stat -c '--euid %u --egid %g' .)
+fi
 
 # Create the output directory
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
@@ -16,14 +17,11 @@ mkdir -p "$(dirname $OUTPUT)"
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-GIT_CLIFF_OUTPUT="$OUTPUT" git-cliff $args
+GIT_CLIFF_OUTPUT="$OUTPUT" ${eids:+setpriv --clear-groups $eids} git-cliff $args
 exit_code=$?
 
 # Output to console
 cat "$OUTPUT"
-
-# Revert permissions
-chown -R "$owner" .
 
 # Set the changelog content
 echo "content<<EOF" >> $GITHUB_OUTPUT
