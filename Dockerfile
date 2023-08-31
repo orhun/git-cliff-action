@@ -1,4 +1,4 @@
-FROM orhunp/git-cliff:1.2.0@sha256:faf39a3ee2853ffe2d79509b90ac12dd8672ca28af61e12824d7f47389f9b2e8
+FROM orhunp/git-cliff:1.3.0-rc.1@sha256:b6fc34bf033f41d1d8d351ba75f0f37eb26952451a9db22873a7cc2297814f8f
 
 LABEL maintainer="orhun <orhunparmaksiz@gmail.com>"
 LABEL repository="https://github.com/orhun/git-cliff-action"
