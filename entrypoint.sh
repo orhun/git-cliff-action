@@ -26,12 +26,12 @@ cat "$OUTPUT"
 chown -R "$owner" .
 
 # Set the changelog content
-echo "content<<EOF" >> $GITHUB_OUTPUT
-cat "$OUTPUT" >> $GITHUB_OUTPUT
-echo "EOF" >> $GITHUB_OUTPUT
+echo "content<<EOF" >>$GITHUB_OUTPUT
+cat "$OUTPUT" >>$GITHUB_OUTPUT
+echo "EOF" >>$GITHUB_OUTPUT
 
 # Set output file
-echo "changelog=$OUTPUT" >> $GITHUB_OUTPUT
+echo "changelog=$OUTPUT" >>$GITHUB_OUTPUT
 
 # Pass exit code to the next step
-echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+echo "exit_code=$exit_code" >>$GITHUB_OUTPUT

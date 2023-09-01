@@ -1,6 +1,6 @@
 name: Action Test
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   git-cliff-action:
