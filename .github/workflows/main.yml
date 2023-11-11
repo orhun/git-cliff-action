@@ -16,8 +16,10 @@ jobs:
         uses: ./
         with:
           config: fixtures/cliff.toml
-          args: --verbose --strip 'footer' --exclude-path '.github/**'
+          args: --verbose --strip 'footer' --exclude-path '.github/**' --tag 0.0.0
         env:
           OUTPUT: fixtures/CHANGELOG.md
       - name: Print the changelog
         run: cat "${{ steps.git-cliff.outputs.changelog }}"
+      - name: Print the version
+        run: echo "${{ steps.git-cliff.outputs.version }}"
