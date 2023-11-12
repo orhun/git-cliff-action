@@ -19,6 +19,10 @@ args=$(echo "$@" | xargs)
 GIT_CLIFF_OUTPUT="$OUTPUT" git-cliff $args
 exit_code=$?
 
+# Retrieve context
+CONTEXT="$(mktemp)"
+GIT_CLIFF_OUTPUT="$CONTEXT" git-cliff $args --context
+
 # Output to console
 cat "$OUTPUT"
 
@@ -32,6 +36,9 @@ echo "EOF" >>$GITHUB_OUTPUT
 
 # Set output file
 echo "changelog=$OUTPUT" >>$GITHUB_OUTPUT
+
+# Set the version output to the version of the latest release
+echo "version=$(jq -r '.[0].version' $CONTEXT)" >>$GITHUB_OUTPUT
 
 # Pass exit code to the next step
 echo "exit_code=$exit_code" >>$GITHUB_OUTPUT

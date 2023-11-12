@@ -13,6 +13,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 - `changelog`: Output file that contains the generated changelog.
 - `content`: Content of the changelog.
+- `version`: Version of the latest release.
 
 ### Environment variables
 

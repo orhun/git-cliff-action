@@ -14,6 +14,8 @@ outputs:
     description: "output file"
   content:
     description: "content of the changelog"
+  version:
+    description: "version of the latest release"
 runs:
   using: "docker"
   image: "Dockerfile"

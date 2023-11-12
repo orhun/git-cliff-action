@@ -13,4 +13,6 @@ COPY README.md /
 COPY LICENSE /
 COPY entrypoint.sh /entrypoint.sh
 
+RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
+
 ENTRYPOINT ["/entrypoint.sh"]
