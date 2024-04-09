@@ -76,6 +76,7 @@ jobs:
           args: -vv --latest --strip header
         env:
           OUTPUT: CHANGES.md
+          GITHUB_REPO: ${{ github.repository }}
 
       # use release body in the same job
       - name: Upload the binary releases
@@ -123,6 +124,7 @@ jobs:
           args: --verbose
         env:
           OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
 
       - name: Commit
         run: |
