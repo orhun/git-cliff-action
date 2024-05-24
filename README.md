@@ -19,6 +19,9 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 - `OUTPUT`: Output file. (Default: `"git-cliff/CHANGELOG.md"`)
 
+> [!NOTE]  
+> If you are using the `--prepend` option then there is no need to specify the `OUTPUT`.
+
 ### Examples
 
 #### Simple
