@@ -4,6 +4,8 @@ set -uxo pipefail
 # Avoid file expansion when passing parameters like with '*'
 set -o noglob
 
+cd "${GITHUB_WORKSPACE}" || exit
+
 # Set up working directory
 owner=$(stat -c "%u:%g" .)
 chown -R "$(id -u)" .
