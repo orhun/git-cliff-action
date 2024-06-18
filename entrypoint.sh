@@ -7,6 +7,7 @@ set -o noglob
 cd "${GITHUB_WORKSPACE}" || exit
 pwd
 ls -lhtra
+apt install git
 git log
 
 # Set up working directory
