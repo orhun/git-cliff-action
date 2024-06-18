@@ -7,7 +7,7 @@ set -o noglob
 cd "${GITHUB_WORKSPACE}" || exit
 pwd
 ls -lhtra
-git-cliff --config=cliff.toml latest..
+git log
 
 # Set up working directory
 owner=$(stat -c "%u:%g" .)
