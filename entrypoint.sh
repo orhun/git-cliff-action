@@ -8,7 +8,7 @@ cd "${GITHUB_WORKSPACE}" || exit
 pwd
 ls -lhtra
 apt update
-apt install git
+apt install git -y
 git log
 
 # Set up working directory
