@@ -5,6 +5,8 @@ set -uxo pipefail
 set -o noglob
 
 cd "${GITHUB_WORKSPACE}" || exit
+pwd
+ls -lhtra
 
 # Set up working directory
 owner=$(stat -c "%u:%g" .)
