@@ -7,6 +7,7 @@ set -o noglob
 cd "${GITHUB_WORKSPACE}" || exit
 pwd
 ls -lhtra
+apt update
 apt install git
 git log
 
