@@ -19,20 +19,19 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 - `OUTPUT`: Output file. (Default: `"git-cliff/CHANGELOG.md"`)
 
-### Important Notes
-- It is important to checkout the repositories as:
-  
-  ```yaml
-  - name: Checkout
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
-  ```
-
-  `fetch-depth: 0` the is key argument to checkout.
-  
-  Otherwise, you might end-up getting empty changelogs or following errors depending on arguments passed to `git-cliff`:\
-  `ERROR git_cliff > Git error: revspec '<tag/sha>' not found; class=Reference (4); code=NotFound (-3)`
+> [!IMPORTANT]
+> It is important to checkout the repositories as:
+>  
+>  ```yaml
+>  - name: Checkout
+>    uses: actions/checkout@v4
+>    with:
+>      fetch-depth: 0
+>  ```
+>  
+>  `fetch-depth: 0` the is key input here to checkout action.
+>  
+>  Otherwise, you might end-up getting empty changelogs or `git ref` errors depending on arguments passed to `git-cliff`.
 
 ### Examples
 
