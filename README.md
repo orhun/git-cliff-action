@@ -20,18 +20,16 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 - `OUTPUT`: Output file. (Default: `"git-cliff/CHANGELOG.md"`)
 
 > [!IMPORTANT]
-> It is important to checkout the repositories as:
->  
->  ```yaml
->  - name: Checkout
->    uses: actions/checkout@v4
->    with:
->      fetch-depth: 0
->  ```
->  
->  `fetch-depth: 0` the is key input here to checkout action.
->  
->  Otherwise, you might end-up getting empty changelogs or `git ref` errors depending on arguments passed to `git-cliff`.
+> Check out the entire history via `fetch-depth: 0` before running this action.
+>
+> ```yaml
+> - name: Checkout
+>   uses: actions/checkout@v4
+>   with:
+>     fetch-depth: 0
+> ```
+>
+> Otherwise, you might end up getting empty changelogs or `git ref` errors depending on arguments passed to `git-cliff`.
 
 ### Examples
 
