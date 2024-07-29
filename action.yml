@@ -21,7 +21,7 @@ outputs:
     description: "content of the changelog"
     value: ${{ steps.run-git-cliff.outputs.content }}
   version:
-    description: "version of the release"
+    description: "version of the latest release"
     value: ${{ steps.run-git-cliff.outputs.version }}
 runs:
   using: "composite"
