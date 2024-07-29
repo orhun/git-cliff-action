@@ -15,7 +15,7 @@ case "${RUNNER_ARCH}" in
 esac
 
 RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
-if [[ "${VERSION}" != "latest" ]]; then
+if [[ "${VERSION}" != 'latest' ]]; then
     RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}'
 fi
 
@@ -24,7 +24,7 @@ fi
 # per GitHub account.
 # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
 RELEASE_INFO="$(curl --silent --show-error --fail \
-    --header 'authorization: Bearer ${GITHUB_TOKEN}' \
+    --header "authorization: Bearer ${GITHUB_TOKEN}" \
     --header 'Cache-Control: no-cache, must-revalidate' \
     "${RELEASE_URL}")"
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
