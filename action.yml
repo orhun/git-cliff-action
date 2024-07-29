@@ -16,20 +16,29 @@ inputs:
 outputs:
   changelog:
     description: "output file"
+    value: ${{ steps.run-git-cliff.outputs.changelog }}
   content:
     description: "content of the changelog"
+    value: ${{ steps.run-git-cliff.outputs.content }}
   version:
     description: "version of the latest release"
+    value: ${{ steps.run-git-cliff.outputs.version }}
 runs:
   using: "composite"
   steps:
     - name: Download git-cliff
       shell: bash
       run: ${{ github.action_path }}/install.sh
+      env:
+        RUNNER_OS: ${{ runner.os }}
+        RUNNER_ARCH: ${{ runner.arch }}
+        VERSION: ${{ inputs.version }}
+        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Run git-cliff
+      id: run-git-cliff
       shell: bash
-      run: ${{ github.action_path }}/run.sh
+      run: ${{ github.action_path }}/run.sh --config=${{ inputs.config }} ${{ inputs.args }}
 
 branding:
   icon: "triangle"

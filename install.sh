@@ -2,12 +2,12 @@
 
 set -uxo pipefail
 
-case "${{ runner.os }}" in
+case "${RUNNER_OS}" in
     macOS)   OS=apple-darwin ;;
     Windows) OS=pc-windows-msvc ;;
     *)       OS=unknown-linux-gnu ;;
 esac
-case "${{ runner.arch }}" in
+case "${RUNNER_ARCH}" in
     ARM64) ARCH=aarch64 ;;
     ARM)   ARCH=pc-windows-msvc ;;
     X86)   ARCH=i686 ;;
@@ -15,8 +15,8 @@ case "${{ runner.arch }}" in
 esac
 
 RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
-if [[ "${{ inputs.version }}" != "latest" ]]; then
-    RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/tags/${{ inputs.version }}'
+if [[ "${VERSION}" != "latest" ]]; then
+    RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}'
 fi
 
 # Although releases endpoint is available without authentication, the current github.token is still passed
@@ -24,7 +24,7 @@ fi
 # per GitHub account.
 # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
 RELEASE_INFO="$(curl --silent --show-error --fail \
-    --header 'authorization: Bearer ${{ github.token }}' \
+    --header 'authorization: Bearer ${GITHUB_TOKEN}' \
     --header 'Cache-Control: no-cache, must-revalidate' \
     "${RELEASE_URL}")"
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
