@@ -16,7 +16,7 @@ esac
 
 RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
 if [[ "${VERSION}" != 'latest' ]]; then
-    RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}'
+    RELEASE_URL="https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}"
 fi
 
 # Although releases endpoint is available without authentication, the current github.token is still passed
