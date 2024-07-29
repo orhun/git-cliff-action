@@ -13,16 +13,3 @@ updates:
       patch:
         update-types:
           - "patch"
-  # Maintain dependencies for docker
-  - package-ecosystem: docker
-    directory: "/"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 10
-    groups:
-      minor:
-        update-types:
-          - "minor"
-      patch:
-        update-types:
-          - "patch"

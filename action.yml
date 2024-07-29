@@ -25,93 +25,12 @@ runs:
   steps:
     - name: Download git-cliff
       shell: bash
-      run: |
-        set -u
+      run: ${{ github.action_path }}/install.sh
 
-        case "${{ runner.os }}" in
-          macOS)   OS=apple-darwin ;;
-          Windows) OS=pc-windows-msvc ;;
-          *)       OS=unknown-linux-gnu ;;
-        esac
-        case "${{ runner.arch }}" in
-          ARM64) ARCH=aarch64 ;;
-          ARM)   ARCH=pc-windows-msvc ;;
-          X86)   ARCH=i686 ;;
-          *)     ARCH=x86_64 ;;
-        esac
-        
-        RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
-        if [[ "${{ inputs.version }}" != "latest" ]]; then
-          RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/tags/${{ inputs.version }}'
-        fi
-       
-        # Although releases endpoint is available without authentication, the current github.token is still passed
-        # in order to increase the limit of 60 requests per hour per IP address to a higher value that's also counted
-        # per GitHub account.
-        # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
-        RELEASE_INFO="$(curl --silent --show-error --fail \
-          --header 'authorization: Bearer ${{ github.token }}' \
-          --header 'Cache-Control: no-cache, must-revalidate' \
-          "${RELEASE_URL}")"
-        TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
-        TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}.tar.gz"
-        LOCATION="$(echo "${RELEASE_INFO}" \
-          | jq --raw-output ".assets[].browser_download_url" \
-          | grep "${TARGET}$")"
-        
-        # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
-        if [[ ! -e "$TARGET" ]]; then
-          curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
-          tar -xf "$TARGET"
-          mv git-cliff-${TAG_NAME:1}/git-cliff .
-        fi
     - name: Run git-cliff
       shell: bash
-      run: |
-        #!/bin/bash -l
-        set -uxo pipefail
+      run: ${{ github.action_path }}/run.sh
 
-        # Avoid file expansion when passing parameters like with '*'
-        set -o noglob
-
-        # Set up working directory
-        owner=$(stat -c "%u:%g" .)
-        chown -R "$(id -u)" .
-
-        # Create the output directory
-        OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
-        mkdir -p "$(dirname $OUTPUT)"
-
-        # Separate arguments before passing them to git-cliff command
-        args=$(echo "$@" | xargs)
-
-        # Execute git-cliff
-        GIT_CLIFF_OUTPUT="$OUTPUT" ./git-cliff $args
-        exit_code=$?
-
-        # Retrieve context
-        CONTEXT="$(mktemp)"
-        GIT_CLIFF_OUTPUT="$CONTEXT" ./git-cliff $args --context
-
-        # Output to console
-        cat "$OUTPUT"
-
-        # Revert permissions
-        chown -R "$owner" .
-
-        # Set the changelog content
-        echo "content<<EOF" >>$GITHUB_OUTPUT
-        cat "$OUTPUT" >>$GITHUB_OUTPUT
-        echo "EOF" >>$GITHUB_OUTPUT
-
-        # Set output file
-        echo "changelog=$OUTPUT" >>$GITHUB_OUTPUT
-
-        # Set the version output to the version of the latest release
-        echo "version=$(jq -r '.[0].version' $CONTEXT)" >>$GITHUB_OUTPUT
-
-        # Pass exit code to the next step
-        echo "exit_code=$exit_code" >>$GITHUB_OUTPUT
 branding:
   icon: "triangle"
   color: "green"
