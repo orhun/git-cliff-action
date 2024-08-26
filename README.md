@@ -6,7 +6,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 ### Input variables
 
-- `version`: `git-cliff` version to use (Default: `"latest"`)
+- `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.5.0"`)
 - `config`: Path of the configuration file. (Default: `"cliff.toml"`)
 - `args`: [Arguments](https://github.com/orhun/git-cliff#usage) to pass to git-cliff. (Default: `"-v"`)
 
@@ -53,7 +53,6 @@ jobs:
         uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
-          version: latest
           config: cliff.toml
           args: --verbose
         env:
