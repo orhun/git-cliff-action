@@ -53,6 +53,7 @@ jobs:
         uses: orhun/git-cliff-action@v3
         id: git-cliff
         with:
+          version: latest
           config: cliff.toml
           args: --verbose
         env:
