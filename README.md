@@ -152,10 +152,6 @@ jobs:
 
 Please note that you need to change the `<branch>` to the branch name that you want to push.
 
-## Credits
-
-This action is based on [lycheeverse/lychee-action](https://github.com/lycheeverse/lychee-action) and uses [git-cliff](https://github.com/orhun/git-cliff).
-
 ## License
 
 GNU General Public License ([v3.0](https://www.gnu.org/licenses/gpl.txt))
