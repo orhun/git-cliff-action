@@ -33,9 +33,12 @@ LOCATION="$(echo "${RELEASE_INFO}" \
     | jq --raw-output ".assets[].browser_download_url" \
     | grep "${TARGET}$")"
 
+# Create bin directory
+mkdir -p ./bin
+
 # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
 if [[ ! -e "$TARGET" ]]; then
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
     tar -xf "$TARGET"
-    mv git-cliff-${TAG_NAME:1}/git-cliff .
+    mv git-cliff-${TAG_NAME:1}/git-cliff ./bin/git-cliff
 fi

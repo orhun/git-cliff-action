@@ -17,12 +17,12 @@ mkdir -p "$(dirname $OUTPUT)"
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-GIT_CLIFF_OUTPUT="$OUTPUT" ./git-cliff $args
+GIT_CLIFF_OUTPUT="$OUTPUT" ./bin/git-cliff $args
 exit_code=$?
 
 # Retrieve context
 CONTEXT="$(mktemp)"
-GIT_CLIFF_OUTPUT="$CONTEXT" ./git-cliff $args --context
+GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/git-cliff $args --context
 
 # Output to console
 cat "$OUTPUT"
