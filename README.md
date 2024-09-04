@@ -153,8 +153,8 @@ Please note that you need to change the `<branch>` to the branch name that you w
 
 ## License
 
-GNU General Public License ([v3.0](https://www.gnu.org/licenses/gpl.txt))
+Licensed under either of [Apache License Version 2.0](./LICENSE-APACHE) or [The MIT License](./LICENSE-MIT) at your option.
 
 ## Copyright
 
-Copyright © 2021-2023, [Orhun Parmaksız](mailto:orhunparmaksiz@gmail.com)
+Copyright © 2021-2024, [Orhun Parmaksız](mailto:orhunparmaksiz@gmail.com)
