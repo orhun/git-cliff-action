@@ -13,6 +13,10 @@ inputs:
     description: "git-cliff arguments"
     required: false
     default: "-v"
+  github_token:
+    description: "GitHub API token"
+    required: false
+    default: "${{ github.token }}"
 outputs:
   changelog:
     description: "output file"
@@ -33,7 +37,7 @@ runs:
         RUNNER_OS: ${{ runner.os }}
         RUNNER_ARCH: ${{ runner.arch }}
         VERSION: ${{ inputs.version }}
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_API_TOKEN: ${{ inputs.version }}
 
     - name: Run git-cliff
       id: run-git-cliff

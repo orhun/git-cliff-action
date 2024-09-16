@@ -20,7 +20,7 @@ if [[ "${VERSION}" != 'latest' ]]; then
 fi
 
 # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GITHUB_API_TOKEN}" ]]; then
     RELEASE_INFO="$(curl --silent --show-error --fail \
         --header 'Cache-Control: no-cache, must-revalidate' \
         "${RELEASE_URL}")"
@@ -29,7 +29,7 @@ else
     # in order to increase the limit of 60 requests per hour per IP address to a higher value that's also counted
     # per GitHub account.
     RELEASE_INFO="$(curl --silent --show-error --fail \
-        --header "authorization: Bearer ${GITHUB_TOKEN}" \
+        --header "authorization: Bearer ${GITHUB_API_TOKEN}" \
         --header 'Cache-Control: no-cache, must-revalidate' \
         "${RELEASE_URL}")"
 fi
