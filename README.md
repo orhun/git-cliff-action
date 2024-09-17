@@ -37,7 +37,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 If you run the action in Gitea or GitHub Enterprise, the `github_token` input is invalid. You have two options:
 
-- Pass an empty value `github_token: ""` (limit of 60 requests per hour per IP address).
+- Pass an empty value (`github_token: ""`) (limit of 60 requests per hour per IP address).
 - Create a GitHub token and pass it through GitHub secrets to avoid rate limiting.
 
 ### Examples
