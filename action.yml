@@ -32,7 +32,7 @@ runs:
   steps:
     - name: Download git-cliff
       shell: bash
-      run: ${{ github.action_path }}/install.sh
+      run: ${GITHUB_ACTION_PATH}/install.sh
       env:
         RUNNER_OS: ${{ runner.os }}
         RUNNER_ARCH: ${{ runner.arch }}
@@ -42,7 +42,7 @@ runs:
     - name: Run git-cliff
       id: run-git-cliff
       shell: bash
-      run: ${{ github.action_path }}/run.sh --config=${{ inputs.config }} ${{ inputs.args }}
+      run: ${GITHUB_ACTION_PATH}/run.sh --config=${{ inputs.config }} ${{ inputs.args }}
 
 branding:
   icon: "triangle"
