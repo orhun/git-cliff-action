@@ -132,13 +132,15 @@ jobs:
   changelog:
     name: Generate changelog
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Generate a changelog
+      - name: Generate changelog
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
