@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -uxo pipefail
+if [[ -n "$DEBUG" ]]; then
+    set -x
+fi
+
+set -uo pipefail
 
 case "${RUNNER_OS}" in
     macOS)   OS=apple-darwin ;;
@@ -18,6 +22,7 @@ RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
 if [[ "${VERSION}" != 'latest' ]]; then
     RELEASE_URL="https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}"
 fi
+echo "Downloading git-cliff ${VERSION} from ${RELEASE_URL}"
 
 # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
 if [[ -z "${GITHUB_API_TOKEN}" ]]; then
@@ -36,16 +41,22 @@ fi
 
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
 TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}.tar.gz"
-LOCATION="$(echo "${RELEASE_INFO}" \
-    | jq --raw-output ".assets[].browser_download_url" \
-    | grep "${TARGET}$")"
+LOCATION="$(echo "${RELEASE_INFO}" |
+    jq --raw-output ".assets[].browser_download_url" |
+    grep "${TARGET}$")"
+echo "Found release: ${LOCATION}"
 
 # Create bin directory
 mkdir -p ./bin
 
 # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
 if [[ ! -e "$TARGET" ]]; then
+    echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
     tar -xf "$TARGET"
     mv git-cliff-${TAG_NAME:1}/git-cliff ./bin/git-cliff
+else
+    echo "Using cached git-cliff binary."
 fi
+
+echo "git-cliff is ready to use!"
