@@ -30,10 +30,14 @@ cat "$OUTPUT"
 # Revert permissions
 chown -R "$owner" .
 
-# Set the changelog content
-echo "content<<EOF" >>$GITHUB_OUTPUT
-cat "$OUTPUT" >>$GITHUB_OUTPUT
-echo "EOF" >>$GITHUB_OUTPUT
+# Set the changelog content (max: 50MB)
+FILESIZE=$(stat -c%s "$OUTPUT")
+MAXSIZE=$((50 * 1024 * 1024))
+if [ "$FILESIZE" -le "$MAXSIZE" ]; then
+  echo "content<<EOF" >>$GITHUB_OUTPUT
+  cat "$OUTPUT" >>$GITHUB_OUTPUT
+  echo "EOF" >>$GITHUB_OUTPUT
+fi
 
 # Set output file
 echo "changelog=$OUTPUT" >>$GITHUB_OUTPUT
