@@ -4,7 +4,7 @@ inputs:
   version:
     description: "git-cliff version"
     required: false
-    default: "v2.6.0"
+    default: "v2.6.1"
   config:
     description: "config file location"
     required: false
