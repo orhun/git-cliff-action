@@ -24,19 +24,17 @@ exit_code=$?
 CONTEXT="$(mktemp)"
 GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/git-cliff $args --context
 
-# Output to console
-cat "$OUTPUT"
-
 # Revert permissions
 chown -R "$owner" .
 
 # Set the changelog content (max: 50MB)
 FILESIZE=$(stat -c%s "$OUTPUT")
-MAXSIZE=$((50 * 1024 * 1024))
+MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
   echo "content<<EOF" >>$GITHUB_OUTPUT
   cat "$OUTPUT" >>$GITHUB_OUTPUT
   echo "EOF" >>$GITHUB_OUTPUT
+  cat "$OUTPUT"
 fi
 
 # Set output file
