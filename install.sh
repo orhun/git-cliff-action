@@ -6,10 +6,19 @@ fi
 
 set -uo pipefail
 
+ARCHIVE_EXT='.tar.gz'
+
 case "${RUNNER_OS}" in
-    macOS)   OS=apple-darwin ;;
-    Windows) OS=pc-windows-msvc ;;
-    *)       OS=unknown-linux-gnu ;;
+    macOS)   
+        OS=apple-darwin
+        ;;
+    Windows) 
+        OS=pc-windows-msvc
+        ARCHIVE_EXT='.zip'
+        ;;
+    *)
+        OS=unknown-linux-gnu
+        ;;
 esac
 case "${RUNNER_ARCH}" in
     ARM64) ARCH=aarch64 ;;
@@ -40,7 +49,7 @@ else
 fi
 
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
-TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}.tar.gz"
+TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}${ARCHIVE_EXT}"
 LOCATION="$(echo "${RELEASE_INFO}" |
     jq --raw-output ".assets[].browser_download_url" |
     grep "${TARGET}$")"
