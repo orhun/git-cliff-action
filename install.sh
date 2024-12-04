@@ -4,9 +4,11 @@ if [[ -n "$DEBUG" ]]; then
     set -x
 fi
 
-set -uo pipefail
+set -euo pipefail
 
-ARCHIVE_EXT='.tar.gz'
+ARCHIVE_EXT='tar.gz'
+ARCHVIE_CMD='tar -xf'
+GIT_CLIFF_BIN='git-cliff'
 
 case "${RUNNER_OS}" in
     macOS)   
@@ -14,7 +16,9 @@ case "${RUNNER_OS}" in
         ;;
     Windows) 
         OS=pc-windows-msvc
-        ARCHIVE_EXT='.zip'
+        ARCHIVE_EXT='zip'
+        ARCHVIE_CMD='7z x -aoa'
+        GIT_CLIFF_BIN="${GIT_CLIFF_BIN}.exe"
         ;;
     *)
         OS=unknown-linux-gnu
@@ -27,11 +31,13 @@ case "${RUNNER_ARCH}" in
     *)     ARCH=x86_64 ;;
 esac
 
+echo "git-cliff-${ARCH}-${OS}.${ARCHIVE_EXT}"
+
 RELEASE_URL='https://api.github.com/repos/orhun/git-cliff/releases/latest'
 if [[ "${VERSION}" != 'latest' ]]; then
     RELEASE_URL="https://api.github.com/repos/orhun/git-cliff/releases/tags/${VERSION}"
 fi
-echo "Downloading git-cliff ${VERSION} from ${RELEASE_URL}"
+echo "Getting git-cliff ${VERSION} from ${RELEASE_URL}"
 
 # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
 if [[ -z "${GITHUB_API_TOKEN}" ]]; then
@@ -49,7 +55,7 @@ else
 fi
 
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
-TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}${ARCHIVE_EXT}"
+TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}.${ARCHIVE_EXT}"
 LOCATION="$(echo "${RELEASE_INFO}" |
     jq --raw-output ".assets[].browser_download_url" |
     grep "${TARGET}$")"
@@ -62,8 +68,9 @@ mkdir -p ./bin
 if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
-    tar -xf "$TARGET"
-    mv git-cliff-${TAG_NAME:1}/git-cliff ./bin/git-cliff
+    echo "Unpacking ${TARGET}..."
+    ${ARCHVIE_CMD} "$TARGET"
+    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} ./bin/${GIT_CLIFF_BIN}
 else
     echo "Using cached git-cliff binary."
 fi
