@@ -23,12 +23,12 @@ mkdir -p "$(dirname $OUTPUT)"
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-GIT_CLIFF_OUTPUT="$OUTPUT" ./bin/${GIT_CLIFF_BIN} $args
+eval ./bin/${GIT_CLIFF_BIN} $args --output "$OUTPUT"
 exit_code=$?
 
 # Retrieve context
 CONTEXT="$(mktemp)"
-GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/${GIT_CLIFF_BIN} $args --context
+eval ./bin/${GIT_CLIFF_BIN} $args --context --output "$CONTEXT"
 
 # Revert permissions
 chown -R "$owner" .
