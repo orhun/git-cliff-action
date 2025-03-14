@@ -28,7 +28,7 @@ exit_code=$?
 
 # Retrieve context
 CONTEXT="$(mktemp)"
-GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/${GIT_CLIFF_BIN} $args --context
+GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/${GIT_CLIFF_BIN} --context $args
 
 # Revert permissions
 chown -R "$owner" .
