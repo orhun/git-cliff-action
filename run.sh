@@ -11,8 +11,7 @@ if [[ "${RUNNER_OS}" == 'Windows' ]]; then
     GIT_CLIFF_BIN="${GIT_CLIFF_BIN}.exe"
 fi
 
-INSTALL_DIR="$RUNNER_TEMP/git-cliff"
-GIT_CLIFF_PATH="$INSTALL_DIR/bin/$GIT_CLIFF_BIN"
+GIT_CLIFF_PATH="$RUNNER_TEMP/git-cliff/bin/$GIT_CLIFF_BIN"
 
 # Set up working directory
 owner=$(stat -c "%u:%g" .)

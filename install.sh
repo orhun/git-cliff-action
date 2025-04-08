@@ -66,7 +66,7 @@ LOCATION="$(echo "${RELEASE_INFO}" |
 echo "Found release: ${LOCATION}"
 
 # Create bin directory
-mkdir -p "$GIT_CLIFF_DIR"
+mkdir -p ./bin
 
 # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
 if [[ ! -e "$TARGET" ]]; then
@@ -74,7 +74,7 @@ if [[ ! -e "$TARGET" ]]; then
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
-    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "$GIT_CLIFF_DIR/$GIT_CLIFF_BIN"
+    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
 else
     echo "Using cached git-cliff binary."
 fi
