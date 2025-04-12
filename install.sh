@@ -7,7 +7,7 @@ fi
 set -euo pipefail
 
 ARCHIVE_EXT='tar.gz'
-ARCHVIE_CMD='tar -xf'
+ARCHIVE_CMD='tar -xf'
 GIT_CLIFF_BIN='git-cliff'
 
 case "${RUNNER_OS}" in
@@ -17,7 +17,7 @@ case "${RUNNER_OS}" in
     Windows) 
         OS=pc-windows-msvc
         ARCHIVE_EXT='zip'
-        ARCHVIE_CMD='7z x -aoa'
+        ARCHIVE_CMD='7z x -aoa'
         GIT_CLIFF_BIN="${GIT_CLIFF_BIN}.exe"
         ;;
     *)
@@ -30,6 +30,10 @@ case "${RUNNER_ARCH}" in
     X86)   ARCH=i686 ;;
     *)     ARCH=x86_64 ;;
 esac
+
+INSTALL_DIR="$RUNNER_TEMP/git-cliff"
+mkdir -p "$INSTALL_DIR"
+cd "$INSTALL_DIR"
 
 echo "git-cliff-${ARCH}-${OS}.${ARCHIVE_EXT}"
 
@@ -69,8 +73,8 @@ if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
     echo "Unpacking ${TARGET}..."
-    ${ARCHVIE_CMD} "$TARGET"
-    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} ./bin/${GIT_CLIFF_BIN}
+    ${ARCHIVE_CMD} "$TARGET"
+    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
 else
     echo "Using cached git-cliff binary."
 fi

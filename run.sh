@@ -11,6 +11,8 @@ if [[ "${RUNNER_OS}" == 'Windows' ]]; then
     GIT_CLIFF_BIN="${GIT_CLIFF_BIN}.exe"
 fi
 
+GIT_CLIFF_PATH="$RUNNER_TEMP/git-cliff/bin/$GIT_CLIFF_BIN"
+
 # Set up working directory
 owner=$(stat -c "%u:%g" .)
 chown -R "$(id -u)" .
@@ -23,12 +25,12 @@ mkdir -p "$(dirname $OUTPUT)"
 args=$(echo "$@" | xargs)
 
 # Execute git-cliff
-GIT_CLIFF_OUTPUT="$OUTPUT" ./bin/${GIT_CLIFF_BIN} $args
+GIT_CLIFF_OUTPUT="$OUTPUT" "$GIT_CLIFF_PATH" $args
 exit_code=$?
 
 # Retrieve context
 CONTEXT="$(mktemp)"
-GIT_CLIFF_OUTPUT="$CONTEXT" ./bin/${GIT_CLIFF_BIN} --context $args
+GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context $args
 
 # Revert permissions
 chown -R "$owner" .
