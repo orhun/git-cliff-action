@@ -74,7 +74,7 @@ if [[ ! -e "$TARGET" ]]; then
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
-    mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
+    mv git-cliff-"${TAG_NAME:1}"/${GIT_CLIFF_BIN} "./bin/${GIT_CLIFF_BIN}"
 else
     echo "Using cached git-cliff binary."
 fi
