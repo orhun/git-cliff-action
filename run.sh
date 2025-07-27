@@ -21,8 +21,26 @@ chown -R "$(id -u)" .
 OUTPUT=${OUTPUT:="git-cliff/CHANGELOG.md"}
 mkdir -p "$(dirname $OUTPUT)"
 
-# Separate arguments before passing them to git-cliff command
-args=$(echo "$@" | xargs)
+args=()
+take_next=
+for arg in "$@"; do
+    case "$arg" in
+    -o | --output)
+        take_next=1 # next argument is the output file
+        ;;
+    -o=* | --output=*)
+        OUTPUT="${arg#*=}" # consume the output file directly
+        ;;
+    *)
+        if [ -n "$take_next" ]; then
+            OUTPUT="$arg"
+            take_next=
+        else
+            args+=("$arg") # keep only non-output args
+        fi
+        ;;
+    esac
+done
 
 # Execute git-cliff
 GIT_CLIFF_OUTPUT="$OUTPUT" "$GIT_CLIFF_PATH" $args
