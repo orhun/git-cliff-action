@@ -43,12 +43,12 @@ for arg in "$@"; do
 done
 
 # Execute git-cliff
-GIT_CLIFF_OUTPUT="$OUTPUT" "$GIT_CLIFF_PATH" $args
+GIT_CLIFF_OUTPUT="$OUTPUT" "$GIT_CLIFF_PATH" "${args[@]}"
 exit_code=$?
 
 # Retrieve context
 CONTEXT="$(mktemp)"
-GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context $args
+GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context "${args[@]}"
 
 # Revert permissions
 chown -R "$owner" .
