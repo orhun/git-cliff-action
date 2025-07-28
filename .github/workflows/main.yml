@@ -1,6 +1,6 @@
 name: Action Test
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   git-cliff-action:
@@ -16,7 +16,7 @@ jobs:
         uses: ./
         with:
           config: fixtures/cliff.toml
-          args: --verbose --strip 'footer' --exclude-path '.github/**' --tag 0.0.0
+          args: --unreleased --strip 'footer' --exclude-path '.github/**' --tag 0.0.0
         env:
           OUTPUT: fixtures/CHANGELOG.md
       - name: Print the changelog
