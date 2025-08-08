@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -uxo pipefail
+if [[ -n "$DEBUG" ]]; then
+    set -x
+fi
+
+set -uo pipefail
 
 # Avoid file expansion when passing parameters like with '*'
 set -o noglob
