@@ -20,6 +20,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 ### Environment variables
 
 - `OUTPUT`: Output file. (Default: `"git-cliff/CHANGELOG.md"`)
+- `DEBUG`: Set to a not empty value (e.g. `"true"`) to print executed commmands. (Default: `unset`)
 
 > [!IMPORTANT]
 > Check out the entire history via `fetch-depth: 0` before running this action.
