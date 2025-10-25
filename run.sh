@@ -17,8 +17,16 @@ fi
 
 GIT_CLIFF_PATH="$RUNNER_TEMP/git-cliff/bin/$GIT_CLIFF_BIN"
 
+# On Darwin, BSD stat is the default
+# otherwise is GNU stat
+if [[ "${RUNNER_OS}" == "macOS" ]]; then
+    stat_cmd=(stat -f)
+else
+    stat_cmd=(stat -c)
+fi
+
 # Set up working directory
-owner=$(stat -c "%u:%g" .)
+owner=$("${stat_cmd}" "%u:%g" .)
 chown -R "$(id -u)" .
 
 # Create the output directory
@@ -58,7 +66,7 @@ GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context "${args[@]}"
 chown -R "$owner" .
 
 # Set the changelog content (max: 50MB)
-FILESIZE=$(stat -c%s "$OUTPUT")
+FILESIZE=$("${stat_cmd}" %s "$OUTPUT")
 MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
     echo "content<<EOF" >>$GITHUB_OUTPUT
