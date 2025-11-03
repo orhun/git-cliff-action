@@ -26,7 +26,7 @@ else
 fi
 
 # Set up working directory
-owner=$("${stat_cmd}" "%u:%g" .)
+owner=$("${stat_cmd[@]}" "%u:%g" .)
 chown -R "$(id -u)" .
 
 # Create the output directory
@@ -66,7 +66,7 @@ GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context "${args[@]}"
 chown -R "$owner" .
 
 # Set the changelog content (max: 50MB)
-FILESIZE=$("${stat_cmd}" %s "$OUTPUT")
+FILESIZE=$("${stat_cmd[@]}" %s "$OUTPUT")
 MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
     echo "content<<EOF" >>$GITHUB_OUTPUT
