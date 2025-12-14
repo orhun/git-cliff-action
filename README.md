@@ -6,7 +6,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 ### Input variables
 
-- `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.10.1"`)
+- `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.11.0"`)
 - `config`: Path of the configuration file. (Default: `"cliff.toml"`)
 - `args`: [Arguments](https://github.com/orhun/git-cliff#usage) to pass to git-cliff. (Default: `"-v"`)
 - `github_token`: The GitHub API token used to get `git-cliff` release information via the GitHub API to avoid rate limits. (Default: `${{ github.token }}`)
