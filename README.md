@@ -27,7 +27,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 >
 > ```yaml
 > - name: Checkout
->   uses: actions/checkout@v4
+>   uses: actions/checkout@v6
 >   with:
 >     fetch-depth: 0
 > ```
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -86,7 +86,7 @@ jobs:
       release_body: ${{ steps.git-cliff.outputs.content }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -137,7 +137,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -162,6 +162,33 @@ jobs:
 ```
 
 Please note that you need to change the `<branch>` to the branch name that you want to push.
+
+#### Run arbitrary git-cliff commands
+
+If you want more flexibility, you can install `git-cliff` via [taiki-e/install-action](https://github.com/taiki-e/install-action#example-workflow) and then run any `git-cliff` commands.
+
+For example, you can use the command `git-cliff --bumped-version` to determine the next release version:
+
+```yml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@git-cliff
+
+      - name: Determine release version
+        run: |
+          release_version=$(git-cliff --bumped-version)
+          echo "Next release version is $release_version"
+```
 
 ## License
 
