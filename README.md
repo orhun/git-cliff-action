@@ -188,8 +188,6 @@ jobs:
         run: |
           release_version=$(git-cliff --bumped-version)
           echo "Next release version is $release_version"
-
-      ...
 ```
 
 ## License
