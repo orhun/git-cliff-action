@@ -1,0 +1,65 @@
+name: Sync git-cliff version
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Get latest git-cliff release
+        id: latest
+        run: |
+          VERSION=$(curl -s https://api.github.com/repos/orhun/git-cliff/releases/latest | jq -r .tag_name)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Read current default version
+        id: current
+        run: |
+          VERSION=$(yq '.inputs.version.default' action.yml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Bump version
+        if: steps.latest.outputs.version != steps.current.outputs.version
+        run: |
+          yq -i ".inputs.version.default = \"${{ steps.latest.outputs.version }}\"" action.yml
+      - name: Create PR
+        if: steps.latest.outputs.version != steps.current.outputs.current
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump git-cliff to ${{ steps.latest.outputs.version }}"
+          branch: bump-git-cliff-${{ steps.latest.outputs.version }}
+          title: "chore: bump git-cliff to ${{ steps.latest.outputs.version }}"
+      - name: Create PR
+        if: steps.latest.outputs.version != steps.current.outputs.version
+        env:
+          VERSION: ${{ steps.latest.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="bump-git-cliff-${VERSION}"
+          MESSAGE="chore: bump git-cliff to ${VERSION}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$BRANCH"
+          git add action.yml
+          git commit -m "$MESSAGE" || echo "Nothing to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH" --force
+
+          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "$MESSAGE" \
+            --body "$MESSAGE" \
+            || echo "PR already exists"
