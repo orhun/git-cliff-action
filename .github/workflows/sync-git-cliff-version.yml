@@ -19,11 +19,13 @@ jobs:
       - name: Get latest git-cliff release
         id: latest
         run: |
+          set -euo pipefail
           VERSION=$(curl -s https://api.github.com/repos/orhun/git-cliff/releases/latest | jq -r .tag_name)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Read current default version
         id: current
         run: |
+          set -euo pipefail
           VERSION=$(yq '.inputs.version.default' action.yml)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Bump version
@@ -32,6 +34,7 @@ jobs:
           CURRENT: ${{ steps.current.outputs.version }}
           LATEST: ${{ steps.latest.outputs.version }}
         run: |
+          set -euo pipefail
           yq -i ".inputs.version.default = \"${LATEST}\"" action.yml
           sed -i "s|${CURRENT}|${LATEST}|g" README.md
       - name: Create PR
