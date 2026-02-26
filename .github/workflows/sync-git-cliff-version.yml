@@ -47,7 +47,7 @@ jobs:
           git checkout -B "$BRANCH"
           git add action.yml
           git commit -m "$MESSAGE" || echo "Nothing to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git "$BRANCH" --force
+          git push origin "$BRANCH" --force
 
           echo "${GITHUB_TOKEN}" | gh auth login --with-token
           gh pr create \
