@@ -28,24 +28,29 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Bump version
         if: steps.latest.outputs.version != steps.current.outputs.version
+        env:
+          CURRENT: ${{ steps.current.outputs.version }}
+          LATEST: ${{ steps.latest.outputs.version }}
         run: |
-          yq -i ".inputs.version.default = \"${{ steps.latest.outputs.version }}\"" action.yml
+          yq -i ".inputs.version.default = \"${LATEST}\"" action.yml
+          sed -i "s|${CURRENT}|${LATEST}|g" README.md
       - name: Create PR
         if: steps.latest.outputs.version != steps.current.outputs.version
         env:
-          VERSION: ${{ steps.latest.outputs.version }}
+          LATEST: ${{ steps.latest.outputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
-          BRANCH="chore/git-cliff-${VERSION}"
-          MESSAGE="chore: bump git-cliff to ${VERSION}"
+          BRANCH="chore/git-cliff-${LATEST}"
+          MESSAGE="chore: bump git-cliff to ${LATEST}"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git checkout -B "$BRANCH"
           git add action.yml
+          git add README.md
           git commit -m "$MESSAGE" || echo "Nothing to commit"
           git push origin "$BRANCH" --force
 
