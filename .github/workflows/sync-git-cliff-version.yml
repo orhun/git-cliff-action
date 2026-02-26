@@ -21,13 +21,13 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(curl -s https://api.github.com/repos/orhun/git-cliff/releases/latest | jq -r .tag_name)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> ${GITHUB_OUTPUT}
       - name: Read current default version
         id: current
         run: |
           set -euo pipefail
           VERSION=$(yq '.inputs.version.default' action.yml)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> ${GITHUB_OUTPUT}
       - name: Bump version
         if: steps.latest.outputs.version != steps.current.outputs.version
         env:
@@ -54,16 +54,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git checkout -B "$BRANCH"
+          git checkout -B "${BRANCH}"
           git add action.yml
           git add README.md
-          git commit -m "$TITLE" || echo "Nothing to commit"
-          git push origin "$BRANCH" --force
+          git commit -m "${TITLE}" || echo "Nothing to commit"
+          git push origin "${BRANCH}" --force
 
           echo "${GITHUB_TOKEN}" | gh auth login --with-token
           gh pr create \
             --base main \
-            --head "$BRANCH" \
-            --title "$TITLE" \
-            --body "$BODY" \
+            --head "${BRANCH}" \
+            --title "${TITLE}" \
+            --body "${BODY}" \
             || echo "PR already exists"
