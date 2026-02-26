@@ -2,7 +2,7 @@ name: Sync git-cliff version
 
 on:
   schedule:
-    - cron: '0 3 * * 1'
+    - cron: '0 3 * * 1' # every Monday at 03:00 UTC
   workflow_dispatch:
 
 permissions:
