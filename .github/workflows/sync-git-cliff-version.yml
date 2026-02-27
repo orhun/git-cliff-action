@@ -35,7 +35,7 @@ jobs:
           LATEST: ${{ steps.latest.outputs.version }}
         run: |
           set -euo pipefail
-          yq -i ".inputs.version.default = \"${LATEST}\"" action.yml
+          sed -i "s|${CURRENT}|${LATEST}|g" action.yml
           sed -i "s|${CURRENT}|${LATEST}|g" README.md
       - name: Create PR
         if: steps.latest.outputs.version != steps.current.outputs.version
