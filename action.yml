@@ -37,14 +37,14 @@ runs:
         RUNNER_OS: ${{ runner.os }}
         RUNNER_ARCH: ${{ runner.arch }}
         VERSION: ${{ inputs.version }}
-        GITHUB_API_TOKEN: ${{ env.GITHUB_TOKEN || inputs.github_token }}
+        GITHUB_API_TOKEN: ${{ inputs.github_token }}
 
     - name: Run git-cliff
       id: run-git-cliff
       shell: bash
       run: ${GITHUB_ACTION_PATH}/run.sh --config=${{ inputs.config }} ${{ inputs.args }}
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN || inputs.github_token }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
 
 branding:
   icon: "triangle"
