@@ -9,7 +9,12 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 - `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.12.0"`)
 - `config`: Path of the configuration file. (Default: `"cliff.toml"`)
 - `args`: [Arguments](https://github.com/orhun/git-cliff#usage) to pass to git-cliff. (Default: `"-v"`)
-- `github_token`: The GitHub API token used to download `git-cliff` and to authenticate git-cliff's [GitHub integration](https://git-cliff.org/docs/integration/github) (e.g. extracting usernames, contributors, PR links) to avoid rate limits. Requires a classic or fine-grained token without permissions. (Default: `${{ github.token }}`)
+- `github_token`: The GitHub API token used to download `git-cliff` and to authenticate git-cliff's [GitHub integration](https://git-cliff.org/docs/integration/github) (e.g. extracting usernames, contributors, PR links) to avoid rate limits. Requires a classic or fine-grained token without permissions.
+> [!NOTE]
+> GitHub API token order of precedence.
+> 1. Input variable `github_token`
+> 2. Environment variable `GITHUB_TOKEN`
+> 3. Github Context (default): `${{ github.token }}`
 
 ### Output variables
 
