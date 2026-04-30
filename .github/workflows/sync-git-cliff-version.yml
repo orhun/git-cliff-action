@@ -60,7 +60,6 @@ jobs:
           git commit -m "${TITLE}" || echo "Nothing to commit"
           git push origin "${BRANCH}" --force
 
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
           gh pr create \
             --base main \
             --head "${BRANCH}" \
