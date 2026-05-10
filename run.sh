@@ -71,7 +71,7 @@ MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
     echo "content<<EOF" >>$GITHUB_OUTPUT
     cat "$OUTPUT" >>$GITHUB_OUTPUT
-    echo "EOF" >>$GITHUB_OUTPUT
+    printf '\nEOF\n' >>$GITHUB_OUTPUT
     cat "$OUTPUT"
 fi
 
