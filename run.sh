@@ -21,8 +21,10 @@ GIT_CLIFF_PATH="$RUNNER_TEMP/git-cliff/bin/$GIT_CLIFF_BIN"
 # otherwise is GNU stat
 if [[ "${RUNNER_OS}" == "macOS" ]]; then
     stat_cmd=(stat -f)
+    size_fmt='%z'
 else
     stat_cmd=(stat -c)
+    size_fmt='%s'
 fi
 
 # Set up working directory
@@ -66,7 +68,7 @@ GIT_CLIFF_OUTPUT="$CONTEXT" "$GIT_CLIFF_PATH" --context "${args[@]}"
 chown -R "$owner" .
 
 # Set the changelog content (max: 50MB)
-FILESIZE=$("${stat_cmd[@]}" %s "$OUTPUT")
+FILESIZE=$("${stat_cmd[@]}" "$size_fmt" "$OUTPUT")
 MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
     echo "content<<EOF" >>$GITHUB_OUTPUT
