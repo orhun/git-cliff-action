@@ -72,7 +72,7 @@ FILESIZE=$("${stat_cmd[@]}" "$size_fmt" "$OUTPUT")
 MAXSIZE=$((40 * 1024 * 1024))
 if [ "$FILESIZE" -le "$MAXSIZE" ]; then
     echo "content<<EOF" >>$GITHUB_OUTPUT
-    cat "$OUTPUT" >>$GITHUB_OUTPUT
+    awk 1 "$OUTPUT" >>$GITHUB_OUTPUT
     echo "EOF" >>$GITHUB_OUTPUT
     cat "$OUTPUT"
 fi
