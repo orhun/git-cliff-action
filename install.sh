@@ -31,6 +31,9 @@ case "${RUNNER_ARCH}" in
     *)     ARCH=x86_64 ;;
 esac
 
+# SHA-256 checksums of the release archives, pinned in this repository.
+CHECKSUMS_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/checksums.sha256"
+
 INSTALL_DIR="$RUNNER_TEMP/git-cliff"
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
@@ -65,6 +68,12 @@ LOCATION="$(echo "${RELEASE_INFO}" |
     grep "${TARGET}$")"
 echo "Found release: ${LOCATION}"
 
+EXPECTED_SHA256="$(awk -v target="${TARGET}" '$2 == target { print $1 }' "${CHECKSUMS_FILE}")"
+if [[ -z "${EXPECTED_SHA256}" ]]; then
+    echo "::error::No pinned checksum for ${TARGET} in checksums.sha256. Use a git-cliff version this action release knows about."
+    exit 1
+fi
+
 # Create bin directory
 mkdir -p ./bin
 
@@ -72,6 +81,17 @@ mkdir -p ./bin
 if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
+    if command -v sha256sum > /dev/null; then
+        ACTUAL_SHA256="$(sha256sum "$TARGET" | awk '{ print $1 }')"
+    else
+        ACTUAL_SHA256="$(shasum -a 256 "$TARGET" | awk '{ print $1 }')"
+    fi
+    if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
+        echo "::error::SHA-256 checksum mismatch for ${TARGET} (expected ${EXPECTED_SHA256}, got ${ACTUAL_SHA256})"
+        rm -f "$TARGET"
+        exit 1
+    fi
+    echo "Checksum OK."
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
     mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
