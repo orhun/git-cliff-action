@@ -31,6 +31,9 @@ case "${RUNNER_ARCH}" in
     *)     ARCH=x86_64 ;;
 esac
 
+# SHA-256 checksums of the release archives, pinned in this repository.
+CHECKSUMS_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/checksums.sha256"
+
 INSTALL_DIR="$RUNNER_TEMP/git-cliff"
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
@@ -65,10 +68,11 @@ LOCATION="$(echo "${RELEASE_INFO}" |
     grep "${TARGET}$")"
 echo "Found release: ${LOCATION}"
 
-# git-cliff publishes a .sha512 checksum next to each tarball (not yet for the Windows zips).
-CHECKSUM_LOCATION="$(echo "${RELEASE_INFO}" |
-    jq --raw-output ".assets[].browser_download_url" |
-    grep "${TARGET}.sha512$" || true)"
+EXPECTED_SHA256="$(awk -v target="${TARGET}" '$2 == target { print $1 }' "${CHECKSUMS_FILE}")"
+if [[ -z "${EXPECTED_SHA256}" ]]; then
+    echo "::error::No pinned checksum for ${TARGET} in checksums.sha256. Use a git-cliff version this action release knows about."
+    exit 1
+fi
 
 # Create bin directory
 mkdir -p ./bin
@@ -77,23 +81,17 @@ mkdir -p ./bin
 if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
-    if [[ -n "${CHECKSUM_LOCATION}" ]]; then
-        echo "Verifying ${TARGET} checksum..."
-        EXPECTED_SHA512="$(curl --silent --show-error --fail --location "$CHECKSUM_LOCATION" | awk '{print $1}')"
-        ACTUAL_SHA512="$(shasum -a 512 "$TARGET" | awk '{print $1}')"
-        if [[ -z "${EXPECTED_SHA512}" || "${EXPECTED_SHA512}" != "${ACTUAL_SHA512}" ]]; then
-            echo "::error::SHA-512 checksum mismatch for ${TARGET} (expected '${EXPECTED_SHA512}', got '${ACTUAL_SHA512}')"
-            rm -f "$TARGET"
-            exit 1
-        fi
-        echo "Checksum OK."
-    elif [[ "${ARCHIVE_EXT}" == 'zip' ]]; then
-        echo "::warning::No SHA-512 checksum published for ${TARGET}, skipping verification."
+    if command -v sha256sum > /dev/null; then
+        ACTUAL_SHA256="$(sha256sum "$TARGET" | awk '{ print $1 }')"
     else
-        echo "::error::No SHA-512 checksum found for ${TARGET}."
+        ACTUAL_SHA256="$(shasum -a 256 "$TARGET" | awk '{ print $1 }')"
+    fi
+    if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
+        echo "::error::SHA-256 checksum mismatch for ${TARGET} (expected ${EXPECTED_SHA256}, got ${ACTUAL_SHA256})"
         rm -f "$TARGET"
         exit 1
     fi
+    echo "Checksum OK."
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
     mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"

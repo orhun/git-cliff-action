@@ -6,7 +6,7 @@ This action generates a changelog based on your Git history using [git-cliff](ht
 
 ### Input variables
 
-- `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.14.2"`) The downloaded archive is verified against the `.sha512` checksum published with the release (Windows archives do not ship one yet, so verification is skipped there with a warning).
+- `version`: `git-cliff` version to use. (e.g. `"latest"`, `"v2.14.2"`) The downloaded archive must match a SHA-256 checksum pinned in [`checksums.sha256`](checksums.sha256), otherwise the action fails. New releases are pinned by the weekly version-sync workflow.
 - `config`: Path of the configuration file. (Default: `"cliff.toml"`)
 - `args`: [Arguments](https://github.com/orhun/git-cliff#usage) to pass to git-cliff. (Default: `"-v"`)
 - `github_token`: The GitHub API token used to download `git-cliff` and to authenticate git-cliff's [GitHub integration](https://git-cliff.org/docs/integration/github) (e.g. extracting usernames, contributors, PR links) to avoid rate limits. Requires a classic or fine-grained token without permissions.

@@ -37,6 +37,19 @@ jobs:
           set -euo pipefail
           sed -i "s|${CURRENT}|${LATEST}|g" action.yml
           sed -i "s|${CURRENT}|${LATEST}|g" README.md
+      - name: Pin checksums
+        if: steps.latest.outputs.version != steps.current.outputs.version
+        env:
+          LATEST: ${{ steps.latest.outputs.version }}
+        run: |
+          set -euo pipefail
+          # GitHub computes a SHA-256 digest for every uploaded release asset.
+          CHECKSUMS=$(curl -s --fail "https://api.github.com/repos/orhun/git-cliff/releases/tags/${LATEST}" |
+            jq -r '.assets[] | select(.name | test("\\.(tar\\.gz|zip)$")) |
+              if (.digest // "" | startswith("sha256:")) then "\(.digest | ltrimstr("sha256:"))  \(.name)"
+              else error("missing digest for \(.name)") end')
+          [[ -n "${CHECKSUMS}" ]]
+          echo "${CHECKSUMS}" >> checksums.sha256
       - name: Create PR
         if: steps.latest.outputs.version != steps.current.outputs.version
         env:
@@ -57,6 +70,7 @@ jobs:
           git checkout -B "${BRANCH}"
           git add action.yml
           git add README.md
+          git add checksums.sha256
           git commit -m "${TITLE}" || echo "Nothing to commit"
           git push origin "${BRANCH}" --force
 
