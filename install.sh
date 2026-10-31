@@ -65,6 +65,11 @@ LOCATION="$(echo "${RELEASE_INFO}" |
     grep "${TARGET}$")"
 echo "Found release: ${LOCATION}"
 
+# git-cliff publishes a .sha512 checksum next to each tarball (not yet for the Windows zips).
+CHECKSUM_LOCATION="$(echo "${RELEASE_INFO}" |
+    jq --raw-output ".assets[].browser_download_url" |
+    grep "${TARGET}.sha512$" || true)"
+
 # Create bin directory
 mkdir -p ./bin
 
@@ -72,6 +77,23 @@ mkdir -p ./bin
 if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
+    if [[ -n "${CHECKSUM_LOCATION}" ]]; then
+        echo "Verifying ${TARGET} checksum..."
+        EXPECTED_SHA512="$(curl --silent --show-error --fail --location "$CHECKSUM_LOCATION" | awk '{print $1}')"
+        ACTUAL_SHA512="$(shasum -a 512 "$TARGET" | awk '{print $1}')"
+        if [[ -z "${EXPECTED_SHA512}" || "${EXPECTED_SHA512}" != "${ACTUAL_SHA512}" ]]; then
+            echo "::error::SHA-512 checksum mismatch for ${TARGET} (expected '${EXPECTED_SHA512}', got '${ACTUAL_SHA512}')"
+            rm -f "$TARGET"
+            exit 1
+        fi
+        echo "Checksum OK."
+    elif [[ "${ARCHIVE_EXT}" == 'zip' ]]; then
+        echo "::warning::No SHA-512 checksum published for ${TARGET}, skipping verification."
+    else
+        echo "::error::No SHA-512 checksum found for ${TARGET}."
+        rm -f "$TARGET"
+        exit 1
+    fi
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
     mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
