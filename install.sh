@@ -60,9 +60,19 @@ fi
 
 TAG_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".tag_name")"
 TARGET="git-cliff-${TAG_NAME:1}-${ARCH}-${OS}.${ARCHIVE_EXT}"
-LOCATION="$(echo "${RELEASE_INFO}" |
-    jq --raw-output ".assets[].browser_download_url" |
-    grep "${TARGET}$")"
+ASSET="$(echo "${RELEASE_INFO}" | jq --compact-output --arg target "${TARGET}" \
+    '.assets[] | select(.name == $target) | {url: .browser_download_url, digest: .digest}')"
+if [[ -z "${ASSET}" ]]; then
+    echo "::error::Could not find ${TARGET} in the git-cliff release."
+    exit 1
+fi
+LOCATION="$(echo "${ASSET}" | jq --raw-output '.url')"
+EXPECTED_DIGEST="$(echo "${ASSET}" | jq --raw-output '.digest')"
+if [[ "${EXPECTED_DIGEST}" != sha256:* ]]; then
+    echo "::error::GitHub did not provide a SHA-256 digest for ${TARGET}."
+    exit 1
+fi
+EXPECTED_SHA256="${EXPECTED_DIGEST#sha256:}"
 echo "Found release: ${LOCATION}"
 
 # Create bin directory
@@ -72,6 +82,21 @@ mkdir -p ./bin
 if [[ ! -e "$TARGET" ]]; then
     echo "Downloading ${TARGET}..."
     curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
+fi
+
+if command -v sha256sum > /dev/null; then
+    ACTUAL_SHA256="$(sha256sum "$TARGET" | awk '{ print $1 }')"
+else
+    ACTUAL_SHA256="$(shasum -a 256 "$TARGET" | awk '{ print $1 }')"
+fi
+if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
+    echo "::error::SHA-256 checksum mismatch for ${TARGET} (expected ${EXPECTED_SHA256}, got ${ACTUAL_SHA256})"
+    rm -f "$TARGET"
+    exit 1
+fi
+echo "Checksum OK."
+
+if [[ ! -e "./bin/$GIT_CLIFF_BIN" ]]; then
     echo "Unpacking ${TARGET}..."
     ${ARCHIVE_CMD} "$TARGET"
     mv git-cliff-${TAG_NAME:1}/${GIT_CLIFF_BIN} "./bin/$GIT_CLIFF_BIN"
